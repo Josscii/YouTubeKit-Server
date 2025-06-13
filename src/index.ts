@@ -17,6 +17,10 @@ export default {
    async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
       const url = new URL(request.url);
 
+      // Log the User-Agent header for debugging purposes
+      const userAgent = request.headers.get('User-Agent') ?? 'unknown';
+      console.log(`User Agent: ${userAgent}`);
+
       // Only handle GET /v1?videoID=... as WebSocket upgrades
       if (url.pathname === '/v1' && request.headers.get('Upgrade') === 'websocket') {
          const videoID = url.searchParams.get('videoID');
