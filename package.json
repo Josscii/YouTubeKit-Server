@@ -16,6 +16,6 @@
 		"wrangler": "^4.14.1"
 	},
 	"dependencies": {
-		"youtubei.js": "^14.0.0"
+		"youtubei.js": "^15.0.0"
 	}
 }

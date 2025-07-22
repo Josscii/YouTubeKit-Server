@@ -1,4 +1,4 @@
-import { Innertube, ClientType } from 'youtubei.js';
+import { Innertube } from 'youtubei.js';
 import { ServerMessage, ServerMessageType, RemoteURLResponse, RemoteURLRequest, RemoteStream } from './models/websocket';
 import { AvailableInnertubeClient } from './models/internal';
 import { fileExtensionFromMimeType } from './file_extension';
@@ -256,7 +256,7 @@ export class YouTubeService {
    }
 
    private async getStreamsForClient(innertube: Innertube, client: AvailableInnertubeClient): Promise<RemoteStream[]> {
-      const info = await innertube.getInfo(this.videoID, client);
+      const info = await innertube.getInfo(this.videoID, { client });
       const f = info.streaming_data || { formats: [], adaptive_formats: [] };
       const formats = [...(f.formats ?? []), ...(f.adaptive_formats ?? [])];
 
