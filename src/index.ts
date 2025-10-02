@@ -21,6 +21,10 @@ export default {
       const userAgent = request.headers.get('User-Agent') ?? 'unknown';
       console.log(`User Agent: ${userAgent}`);
 
+      // Log the App ID header for debugging purposes
+      const appID = request.headers.get('X-AppID-v1') ?? 'unknown';
+      console.log(`App ID: ${appID}`);
+
       // Only handle GET /v1?videoID=... as WebSocket upgrades
       if (url.pathname === '/v1' && request.headers.get('Upgrade') === 'websocket') {
          const videoID = url.searchParams.get('videoID');
