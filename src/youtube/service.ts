@@ -91,7 +91,9 @@ export class YouTubeService {
       });
 
       try {
-         const innertube = await Innertube.create({ fetch: wsFetch });
+         // const innertube = await Innertube.create({ fetch: wsFetch });
+         // fix player_id for now (suggested by https://github.com/LuanRT/YouTube.js/issues/1043)
+         const innertube = await Innertube.create({ fetch: wsFetch, player_id: '0004de42' });
          const streams = await this.getStreams(innertube);
 
          this.send({ type: ServerMessageType.result, content: streams });
