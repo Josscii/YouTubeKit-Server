@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main, cloudflare-worker]
   pull_request:
 
 jobs:
