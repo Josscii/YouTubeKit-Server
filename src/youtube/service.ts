@@ -1,7 +1,8 @@
-import { Innertube } from 'youtubei.js';
+import { Innertube, Platform } from 'youtubei.js';
 import { ServerMessage, ServerMessageType, RemoteURLResponse, RemoteURLRequest, RemoteStream } from './models/websocket';
 import { AvailableInnertubeClient } from './models/internal';
 import { fileExtensionFromMimeType } from './file_extension';
+import { evaluateJavaScript } from './js-evaluator';
 
 export class YouTubeService {
    readonly videoID: string;
@@ -91,6 +92,11 @@ export class YouTubeService {
       });
 
       try {
+         // Configure JavaScript evaluator for deciphering using QuickJS
+         Platform.shim.eval = async (data, env) => {
+            return await evaluateJavaScript(data, env);
+         };
+
          const innertube = await Innertube.create({ fetch: wsFetch });
          const streams = await this.getStreams(innertube);
 
@@ -236,7 +242,7 @@ export class YouTubeService {
    // - InnerTube Methods -
 
    private async getStreams(innertube: Innertube): Promise<RemoteStream[]> {
-      const clients: AvailableInnertubeClient[] = ['TV', 'WEB'];
+      const clients: AvailableInnertubeClient[] = ['TV'];
       //   const clients: AvailableInnertubeClient[] = ['WEB_EMBEDDED'];
       let allStreams: RemoteStream[] = [];
 
@@ -265,11 +271,12 @@ export class YouTubeService {
             let deciphered: string | undefined;
             try {
                deciphered = await format.decipher(innertube.session.player);
-            } catch {
+            } catch (error) {
+               console.log('decipher error:', error);
                deciphered = undefined;
             }
 
-            const streamUrl = deciphered ?? (format as any).deciphered_url ?? format.url;
+            const streamUrl = deciphered ?? ((format as any).deciphered_url as string | undefined); // ?? format.url;
 
             if (!streamUrl) {
                return null;

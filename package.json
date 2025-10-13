@@ -16,6 +16,7 @@
 		"wrangler": "^4.14.1"
 	},
 	"dependencies": {
+		"quickjs-emscripten": "^0.31.0",
 		"youtubei.js": "^16.0.0"
 	}
 }
