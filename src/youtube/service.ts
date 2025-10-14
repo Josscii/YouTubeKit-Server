@@ -266,8 +266,13 @@ export class YouTubeService {
       const f = info.streaming_data || { formats: [], adaptive_formats: [] };
       const formats = [...(f.formats ?? []), ...(f.adaptive_formats ?? [])];
 
-      const streamsOrNull = await Promise.all(
-         formats.map(async format => {
+      // Process formats in batches to reduce memory pressure (avoids exceeding 128MB limit)
+      const BATCH_SIZE = 5;
+      const streamsOrNull: (RemoteStream | null)[] = [];
+
+      for (let i = 0; i < formats.length; i += BATCH_SIZE) {
+         const batch = formats.slice(i, i + BATCH_SIZE);
+         const batchResults = await Promise.all(batch.map(async format => {
             let deciphered: string | undefined;
             try {
                deciphered = await format.decipher(innertube.session.player);
@@ -324,8 +329,11 @@ export class YouTubeService {
                filesize: format.content_length ? Number(format.content_length) : undefined,
             };
             return stream;
-         })
-      );
+         }));
+
+         streamsOrNull.push(...batchResults);
+      }
+
       const filteredStreams = streamsOrNull.filter((stream): stream is RemoteStream => stream !== null);
 
       return filteredStreams;
