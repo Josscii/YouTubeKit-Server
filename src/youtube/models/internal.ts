@@ -4,6 +4,7 @@ export type AvailableInnertubeClient =
    | 'WEB'
    | 'MWEB'
    | 'ANDROID'
+   | 'ANDROID_SDKLESS'
    | 'YTMUSIC'
    | 'YTMUSIC_ANDROID'
    | 'YTSTUDIO_ANDROID'
